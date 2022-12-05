@@ -1,0 +1,19 @@
+Firstly open the webpage
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+the browser displays html content
+
+Then type in a random text into the input field provided.
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+Request Payload: {content: "I'm having fun", date: "2022-12-05T10:20:27.637Z"}
+content
+: 
+"I'm having fun"
+date
+: 
+"2022-12-05T10:20:27.637Z"
+
+Response
+{"message":"note created"}
+
+server->browser: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+displays all requests that had been sent.
