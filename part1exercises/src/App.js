@@ -62,7 +62,7 @@ return (
     <Total parts={parts} />
   </div>
 )
-}
+
 
 
 export default App
