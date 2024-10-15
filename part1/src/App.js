@@ -1,10 +1,17 @@
 const Hello = (props) => {
+  const name = props.name;
+  const age = props.age;
+  const bornYear = () => new Date().getFullYear();
+
   return (
     <div>
-      <p>Hello {props.name}, you are {props.age} years old.</p>
+      <p>
+        Hello {name}, you are {age} years old.
+      </p>
+      <p>So you were probably born in {bornYear}</p>
     </div>
-  )
-}
+  );
+};
 
 const App = () => {
   // const now = new Date()
@@ -19,16 +26,15 @@ const App = () => {
   //     </p>
   //   </div>
   // )
-  const name = 'Musa'
-  const age = 10
+  const name = "Musa";
+  const age = 10;
   return (
     <div>
       <h1>Greetings</h1>
-      <Hello name='Musa' age={26 + 10} />
-      <Hello name='Ajibade' age={age} />
+      <Hello name="Musa" age={26 + 10} />
+      <Hello name="Ajibade" age={age} />
     </div>
-  )
-}
+  );
+};
 
-export default App
-
+export default App;
