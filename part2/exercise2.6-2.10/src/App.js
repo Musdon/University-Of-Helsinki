@@ -8,15 +8,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
 
-  const hook = () => {
-    console.log("entering the axios");
-    axios.get("http://localhost:3002/persons").then((response) => {
-      console.log(response.data);
-      setPersons(response.data);
+  useEffect(() => {
+    personService.getAll().then((initialObject) => {
+      setPersons(initialObject);
     });
-  };
-  useEffect(hook, []);
-  console.log("render", persons.length, "persons");
+  });
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
