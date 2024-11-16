@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -30,13 +31,18 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault();
-
+    const personObject = {
+      name: newName,
+      number: newNumber,
+    };
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already in the phone book`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      setNewName("");
-      setNewNumber("");
+      personService.create(personObject).then((returnedObject) => {
+        setPersons(persons.concat({ name: newName, number: newNumber }));
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
