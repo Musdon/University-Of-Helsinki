@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import personService from "./services/persons";
 
@@ -7,6 +6,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     personService.getAll().then((initialObject) => {
@@ -33,35 +33,67 @@ const App = () => {
       number: newNumber,
     };
     const existingPerson = persons.some((person) => person.name === newName);
-    if (existingPerson) {
-      alert(`${newName} is already in the phone book, replace old number?`);
-      const person = persons.find((p) => p.name === newName);
-      console.log(`person being updated is ${person.name}`);
 
-      personService
-        .updateNumber(person.id, personObject)
-        .then((updatedPerson) => {
-          setPersons(
-            persons.map((person) =>
-              person.id === updatedPerson.id ? updatedPerson : person
-            )
-          );
-        })
-        .catch((error) => {
-          alert(
-            `Failed to update ${newName} perhaps they've previously been deleted`
-          );
-          setPersons(persons.filter((person) => person.id !== existingPerson));
-        });
-      setNewName("");
-      setNewNumber("");
+    if (existingPerson) {
+      const person = persons.find((p) => p.name === newName);
+
+      if (
+        window.confirm(
+          `${newName} is already in the phone book, replace the old number?`
+        )
+      ) {
+        personService
+          .updateNumber(person.id, personObject)
+          .then((updatedPerson) => {
+            setPersons(
+              persons.map((p) =>
+                p.id === updatedPerson.id ? updatedPerson : p
+              )
+            );
+            setSuccessMessage(
+              `${personObject.name}'s number has been updated.`
+            );
+            setTimeout(() => setSuccessMessage(""), 3000);
+          })
+          .catch((error) => {
+            alert(
+              `Failed to update ${newName}. Perhaps they've already been removed from the server.`
+            );
+            setPersons(persons.filter((p) => p.id !== person.id));
+          });
+      }
     } else {
       personService.create(personObject).then((returnedObject) => {
-        setPersons(persons.concat({ name: newName, number: newNumber }));
-        setNewName("");
-        setNewNumber("");
+        setPersons(persons.concat(returnedObject));
+        setSuccessMessage(
+          `${personObject.name} has been added to the phonebook.`
+        );
+        setTimeout(() => setSuccessMessage(""), 3000);
       });
     }
+
+    setNewName("");
+    setNewNumber("");
+  };
+
+  const Notification = ({ message }) => {
+    if (!message) {
+      return null;
+    }
+    return (
+      <div
+        style={{
+          color: "green",
+          backgroundColor: "#d4edda",
+          padding: "10px",
+          border: "1px solid green",
+          borderRadius: "5px",
+          marginBottom: "10px",
+        }}
+      >
+        {message}
+      </div>
+    );
   };
 
   const deletePerson = (id, event) => {
@@ -83,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage} />
       <div>
         filter shown with: <input value={search} onChange={handleSearchField} />
       </div>
